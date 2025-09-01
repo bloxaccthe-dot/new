@@ -1,0 +1,268 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+   Name = "Rayfield Example Window",
+   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "Rayfield Interface Suite",
+   LoadingSubtitle = "by Sirius",
+   ShowText = "Rayfield", -- for mobile users to unhide rayfield, change if you'd like
+   Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+   ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+local Tab = Window:CreateTab("TimeBomb", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("Bang&others")
+local Button = Tab:CreateButton({
+   Name = "Bang",
+   Callback = function()
+   local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+-- 🪟 GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "StickyBangGUI"
+ScreenGui.Parent = game:GetService("CoreGui")
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 320, 0, 180)
+Frame.Position = UDim2.new(0.5, -160, 0.3, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Parent = ScreenGui
+Frame.ClipsDescendants = true
+Frame.AnchorPoint = Vector2.new(0.5,0.5)
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0,12)
+UICorner.Parent = Frame
+
+-- ✋ سحب
+local dragging, dragInput, dragStart, startPos
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and input == dragInput then
+        local delta = input.Position - dragStart
+        Frame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+-- 💬 العنوان
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1,0,0,35)
+TitleBar.BackgroundColor3 = Color3.fromRGB(15,15,15)
+TitleBar.Parent = Frame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1,-40,1,0)
+Title.Position = UDim2.new(0,10,0,0)
+Title.BackgroundTransparency = 1
+Title.Text = "🔥 Lac - xxx 🔥"
+Title.TextColor3 = Color3.fromRGB(255,255,255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 20
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TitleBar
+
+-- زر إغلاق
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0,30,0,30)
+CloseBtn.Position = UDim2.new(1,-35,0,3)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
+CloseBtn.Text = "✖"
+CloseBtn.TextColor3 = Color3.new(1,1,1)
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 20
+CloseBtn.Parent = TitleBar
+
+local UICorner3 = Instance.new("UICorner")
+UICorner3.CornerRadius = UDim.new(0,8)
+UICorner3.Parent = CloseBtn
+
+-- مربع كتابة
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(1,-30,0,40)
+TextBox.Position = UDim2.new(0,15,0,55)
+TextBox.PlaceholderText = "اكتب أول حرفين من اسم الهدف"
+TextBox.ClearTextOnFocus = false
+TextBox.TextColor3 = Color3.fromRGB(255,255,255)
+TextBox.BackgroundColor3 = Color3.fromRGB(40,40,40)
+TextBox.Font = Enum.Font.Gotham
+TextBox.TextSize = 18
+TextBox.Parent = Frame
+
+local UICorner4 = Instance.new("UICorner")
+UICorner4.CornerRadius = UDim.new(0,8)
+UICorner4.Parent = TextBox
+
+-- زر التفعيل
+local AttachBtn = Instance.new("TextButton")
+AttachBtn.Size = UDim2.new(1,-30,0,45)
+AttachBtn.Position = UDim2.new(0,15,0,110)
+AttachBtn.BackgroundColor3 = Color3.fromRGB(0,150,80)
+AttachBtn.Text = "🚀 Bang"
+AttachBtn.TextColor3 = Color3.fromRGB(255,255,255)
+AttachBtn.Font = Enum.Font.GothamBold
+AttachBtn.TextSize = 20
+AttachBtn.Parent = Frame
+
+local UICorner5 = Instance.new("UICorner")
+UICorner5.CornerRadius = UDim.new(0,10)
+UICorner5.Parent = AttachBtn
+
+----------------------------------------------------
+-- 🔁 منطق البانغ
+----------------------------------------------------
+local attached = false
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local connection
+local targetPlayer -- نخزن الهدف هنا عشان بعد الموت يكمل
+
+local function findPlayerByNamePrefix(prefix)
+    prefix = prefix:lower()
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= player and plr.Name:lower():sub(1, #prefix) == prefix then
+            return plr
+        end
+    end
+    return nil
+end
+
+local function startBang(targetHRP, targetPlr)
+    local baseDistance = 1.2 
+    local direction = 1
+    local speed = 6
+    local currentOffset = baseDistance
+
+    connection = RunService.RenderStepped:Connect(function(delta)
+        if not attached or not targetPlr.Character or not targetPlr.Character:FindFirstChild("HumanoidRootPart") then
+            attached = false
+            AttachBtn.Text = "🚀 Bang"
+            if connection then connection:Disconnect() end
+            return
+        end
+
+        humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        if not humanoidRootPart then return end
+
+        currentOffset = currentOffset + direction * speed * delta
+        if currentOffset > baseDistance + 0.5 then
+            direction = -1
+        elseif currentOffset < baseDistance - 0.5 then
+            direction = 1
+        end
+
+        local targetPos = targetHRP.Position
+        local targetLook = targetHRP.CFrame.LookVector
+        local newPos = targetPos - targetLook * currentOffset 
+        humanoidRootPart.CFrame = CFrame.new(newPos, targetPos)
+    end)
+end
+
+AttachBtn.MouseButton1Click:Connect(function()
+    if attached then
+        attached = false
+        targetPlayer = nil
+        AttachBtn.Text = "🚀 Bang"
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
+        return
+    end
+
+    local prefix = TextBox.Text
+    if prefix == "" then
+        warn("اكتب أول حرفين من اسم الهدف")
+        return
+    end
+
+    targetPlayer = findPlayerByNamePrefix(prefix)
+    if not targetPlayer or not targetPlayer.Character then
+        warn("اللاعب غير موجود")
+        return
+    end
+
+    local targetHRP = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not targetHRP then
+        warn("الهدف ما عنده HRP")
+        return
+    end
+
+    attached = true
+    AttachBtn.Text = "إيقاف ❌"
+    startBang(targetHRP, targetPlayer)
+end)
+
+-- ✨ استمرار بعد الموت
+player.CharacterAdded:Connect(function(char)
+    character = char
+    humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    if attached and targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        task.wait(1)
+        startBang(targetPlayer.Character.HumanoidRootPart, targetPlayer)
+    end
+end)
+
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+    if connection then
+        connection:Disconnect()
+        connection = nil
+    end
+    attached = false
+    targetPlayer = nil
+end)
+})
