@@ -94,6 +94,7 @@ local ResetButton = Tab:CreateButton({
       })
    end,
 })
+local Section = Tab:CreateSection("Section Example")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
