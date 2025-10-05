@@ -94,58 +94,69 @@ local ResetButton = Tab:CreateButton({
       })
    end,
 })
--- 🕒 تايمر التشغيل والسيرفر المعدل
-local startTime = os.time() -- وقت تشغيل السكربت
+-- === تايمر السكربت + وقت السيرفر الحقيقي بصيغة مقروءة ===
+local startTime = os.time() -- وقت تشغيل السكربت محلياً
 
--- دالة تنسيق الزمن (تحول الثواني إلى نص جميل)
+-- دالة تنسيق زمن السكربت (كما عندك)
 local function formatTimeAgo(seconds)
    if seconds < 60 then
-      return string.format("قبل %d ثانية", seconds)
+      return "قبل لحظات"
    elseif seconds < 3600 then
-      return string.format("قبل %d دقيقة", math.floor(seconds / 60))
+      local m = math.floor(seconds / 60)
+      return string.format("قبل %d %s", m, (m == 1 and "دقيقة" or "دقائق"))
    elseif seconds < 86400 then
-      return string.format("قبل %d ساعة", math.floor(seconds / 3600))
+      local h = math.floor(seconds / 3600)
+      return string.format("قبل %d %s", h, (h == 1 and "ساعة" or "ساعات"))
    else
-      return string.format("قبل %d يوم", math.floor(seconds / 86400))
+      local d = math.floor(seconds / 86400)
+      return string.format("قبل %d %s", d, (d == 1 and "يوم" or "أيام"))
    end
 end
 
--- دالة لتحويل زمن السيرفر إلى صيغة أكثر واقعية
-local function formatServerTime(seconds)
-   local hours = math.floor(seconds / 3600)
+-- دالة لتنسيق الوقت الحقيقي للسيرفر (المأخوذ من DistributedGameTime)
+local function formatServerRunning(seconds)
+   if seconds < 60 then
+      return "السيرفر بدأ منذ لحظات"
+   end
+
+   local days = math.floor(seconds / 86400)
+   local hours = math.floor((seconds % 86400) / 3600)
    local minutes = math.floor((seconds % 3600) / 60)
 
-   if hours > 0 then
-      return string.format("السيرفر يعمل منذ %d ساعة و %d دقيقة", hours, minutes)
-   elseif minutes > 0 then
-      return string.format("السيرفر يعمل منذ %d دقيقة", minutes)
+   if days > 0 then
+      if hours > 0 then
+         return string.format("السيرفر يعمل منذ %d %s و %d %s", days, (days==1 and "يوم" or "أيام"), hours, (hours==1 and "ساعة" or "ساعات"))
+      else
+         return string.format("السيرفر يعمل منذ %d %s", days, (days==1 and "يوم" or "أيام"))
+      end
+   elseif hours > 0 then
+      if minutes > 0 then
+         return string.format("السيرفر يعمل منذ %d %s و %d %s", hours, (hours==1 and "ساعة" or "ساعات"), minutes, (minutes==1 and "دقيقة" or "دقائق"))
+      else
+         return string.format("السيرفر يعمل منذ %d %s", hours, (hours==1 and "ساعة" or "ساعات"))
+      end
    else
-      return string.format("السيرفر يعمل منذ %d ثانية", math.floor(seconds))
+      return string.format("السيرفر يعمل منذ %d %s", minutes, (minutes==1 and "دقيقة" or "دقائق"))
    end
 end
 
--- 🔹 إنشاء تبويب الوقت
-local TimerTab = Window:CreateTab("⏱️ Info", 7733658504)
-local TimerSection = TimerTab:CreateSection("معلومات الوقت")
+-- إنشاء تبويب/ليبل أو استخدم الموجود
+local InfoTab = Window:CreateTab("⏱️ Info", 7733658504)
+local InfoSection = InfoTab:CreateSection("معلومات الوقت")
 
-local ScriptLabel = TimerTab:CreateLabel("جارٍ التحميل...")
-local ServerLabel = TimerTab:CreateLabel("جارٍ التحميل...")
+local ScriptLabel = InfoTab:CreateLabel("⌛ جارٍ الحساب...")
+local ServerLabel = InfoTab:CreateLabel("🕓 جارٍ الحساب...")
 
--- 🔁 التحديث المستمر
+-- تحديث كل 5 ثواني باستخدام DistributedGameTime (وقت السيرفر الحقيقي)
 task.spawn(function()
    while task.wait(5) do
+      -- زمن تشغيل السكربت (محلي)
       local now = os.time()
-      local elapsed = now - startTime
+      local elapsedScript = now - startTime
+      ScriptLabel:Set("⌛ تم تشغيل السكربت " .. formatTimeAgo(elapsedScript))
 
-      -- حساب زمن السكربت
-      local scriptText = "⌛ تم تشغيل السكربت " .. formatTimeAgo(elapsed)
-
-      -- حساب زمن السيرفر
-      local serverSeconds = workspace.DistributedGameTime
-      local serverText = "🕓 " .. formatServerTime(serverSeconds)
-
-      -- تحديث الليبلات
-      ScriptLabel:Set(scriptText)
-      ServerLabel:Set(serverText)
+      -- زمن السيرفر الحقيقي (من Roblox)
+      local serverSeconds = tonumber(workspace.DistributedGameTime) or 0
+      ServerLabel:Set(formatServerRunning(serverSeconds))
    end
 end)
