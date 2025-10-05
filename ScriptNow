@@ -94,10 +94,50 @@ local ResetButton = Tab:CreateButton({
       })
    end,
 })
-local Section = Tab:CreateSection("Section Example")
-local Button = Tab:CreateButton({
-   Name = "Fly",
-   Callback = function()
-   loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Flyv2-30617"))()
-   end,
-})
+-- 🕒 تايمر التشغيل والسيرفر
+local startTime = os.time() -- وقت تشغيل السكربت
+local function formatTimeAgo(seconds)
+   if seconds < 60 then
+      return string.format("قبل %d ثانية", seconds)
+   elseif seconds < 3600 then
+      return string.format("قبل %d دقيقة", math.floor(seconds / 60))
+   elseif seconds < 86400 then
+      return string.format("قبل %d ساعة", math.floor(seconds / 3600))
+   else
+      return string.format("قبل %d يوم", math.floor(seconds / 86400))
+   end
+end
+
+-- قسم التايمر
+local TimerTab = Window:CreateTab("⏱️ Info", 7733658504)
+local TimerSection = TimerTab:CreateSection("معلومات الوقت")
+
+-- إنشاء الليبلات
+local ScriptLabel = TimerTab:CreateLabel("تم التشغيل الآن ⌛")
+local ServerLabel = TimerTab:CreateLabel("السيرفر يعمل منذ الآن 🕓")
+
+-- وظيفة التحديث
+task.spawn(function()
+   while task.wait(5) do -- يحدث كل 5 ثواني
+      local now = os.time()
+      local elapsed = now - startTime
+      local scriptTimeText = "⏳ تم تشغيل السكربت " .. formatTimeAgo(elapsed)
+
+      -- وقت السيرفر التقريبي
+      local serverSeconds = workspace.DistributedGameTime
+      local serverText
+      if serverSeconds < 60 then
+         serverText = string.format("🕓 السيرفر يعمل منذ %.0f ثانية", serverSeconds)
+      elseif serverSeconds < 3600 then
+         serverText = string.format("🕓 السيرفر يعمل منذ %.0f دقيقة", serverSeconds / 60)
+      elseif serverSeconds < 86400 then
+         serverText = string.format("🕓 السيرفر يعمل منذ %.1f ساعة", serverSeconds / 3600)
+      else
+         serverText = string.format("🕓 السيرفر يعمل منذ %.1f يوم", serverSeconds / 86400)
+      end
+
+      -- تحديث الليبلات
+      ScriptLabel:Set(scriptTimeText)
+      ServerLabel:Set(serverText)
+   end
+end)
