@@ -94,8 +94,10 @@ local ResetButton = Tab:CreateButton({
       })
    end,
 })
--- 🕒 تايمر التشغيل والسيرفر
+-- 🕒 تايمر التشغيل والسيرفر المعدل
 local startTime = os.time() -- وقت تشغيل السكربت
+
+-- دالة تنسيق الزمن (تحول الثواني إلى نص جميل)
 local function formatTimeAgo(seconds)
    if seconds < 60 then
       return string.format("قبل %d ثانية", seconds)
@@ -108,36 +110,42 @@ local function formatTimeAgo(seconds)
    end
 end
 
--- قسم التايمر
+-- دالة لتحويل زمن السيرفر إلى صيغة أكثر واقعية
+local function formatServerTime(seconds)
+   local hours = math.floor(seconds / 3600)
+   local minutes = math.floor((seconds % 3600) / 60)
+
+   if hours > 0 then
+      return string.format("السيرفر يعمل منذ %d ساعة و %d دقيقة", hours, minutes)
+   elseif minutes > 0 then
+      return string.format("السيرفر يعمل منذ %d دقيقة", minutes)
+   else
+      return string.format("السيرفر يعمل منذ %d ثانية", math.floor(seconds))
+   end
+end
+
+-- 🔹 إنشاء تبويب الوقت
 local TimerTab = Window:CreateTab("⏱️ Info", 7733658504)
 local TimerSection = TimerTab:CreateSection("معلومات الوقت")
 
--- إنشاء الليبلات
-local ScriptLabel = TimerTab:CreateLabel("تم التشغيل الآن ⌛")
-local ServerLabel = TimerTab:CreateLabel("السيرفر يعمل منذ الآن 🕓")
+local ScriptLabel = TimerTab:CreateLabel("جارٍ التحميل...")
+local ServerLabel = TimerTab:CreateLabel("جارٍ التحميل...")
 
--- وظيفة التحديث
+-- 🔁 التحديث المستمر
 task.spawn(function()
-   while task.wait(5) do -- يحدث كل 5 ثواني
+   while task.wait(5) do
       local now = os.time()
       local elapsed = now - startTime
-      local scriptTimeText = "⏳ تم تشغيل السكربت " .. formatTimeAgo(elapsed)
 
-      -- وقت السيرفر التقريبي
+      -- حساب زمن السكربت
+      local scriptText = "⌛ تم تشغيل السكربت " .. formatTimeAgo(elapsed)
+
+      -- حساب زمن السيرفر
       local serverSeconds = workspace.DistributedGameTime
-      local serverText
-      if serverSeconds < 60 then
-         serverText = string.format("🕓 السيرفر يعمل منذ %.0f ثانية", serverSeconds)
-      elseif serverSeconds < 3600 then
-         serverText = string.format("🕓 السيرفر يعمل منذ %.0f دقيقة", serverSeconds / 60)
-      elseif serverSeconds < 86400 then
-         serverText = string.format("🕓 السيرفر يعمل منذ %.1f ساعة", serverSeconds / 3600)
-      else
-         serverText = string.format("🕓 السيرفر يعمل منذ %.1f يوم", serverSeconds / 86400)
-      end
+      local serverText = "🕓 " .. formatServerTime(serverSeconds)
 
       -- تحديث الليبلات
-      ScriptLabel:Set(scriptTimeText)
+      ScriptLabel:Set(scriptText)
       ServerLabel:Set(serverText)
    end
 end)
