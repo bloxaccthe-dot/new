@@ -110,3 +110,43 @@ end)
 Players.PlayerRemoving:Connect(function()
     PlayerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
 end)
+-- إنشاء Section
+local CopySection = Tab:CreateSection("اضغط لنسخ حساب المطور")
+
+-- زر النسخ
+local CopyButton = Tab:CreateButton({
+    Name = "نسخ يوزر المطور",
+    Callback = function()
+        local username = "kaljjaj"  -- هنا اسم المطور الثابت
+
+        -- نجرب دالة النسخ الشائعة
+        local success, err = pcall(function()
+            if setclipboard then
+                setclipboard(username)
+            elseif syn and syn.set_clipboard then
+                syn.set_clipboard(username)
+            elseif toclipboard then
+                toclipboard(username)
+            else
+                error("النسخ غير مدعوم على هذا الـ executor")
+            end
+        end)
+
+        -- إشعار بعد النسخ أو الفشل
+        if success then
+            Tab:CreateNotification({
+                Name = "تم النسخ",
+                Content = "تم نسخ يوزر المطور إلى الحافظة ✅",
+                Image = "rbxassetid://7733658504",
+                Time = 4
+            })
+        else
+            Tab:CreateNotification({
+                Name = "فشل النسخ",
+                Content = "النسخ التلقائي غير مدعوم على هذا executor. انسخ الاسم يدوياً: " .. username,
+                Image = "rbxassetid://7733658504",
+                Time = 6
+            })
+        end
+    end
+})
