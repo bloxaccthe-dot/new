@@ -160,10 +160,18 @@ task.spawn(function()
       ServerLabel:Set(formatServerRunning(serverSeconds))
    end
 end)
-local PlayerCountLabel = Tab:CreateLabel("Players: "..#Players:GetPlayers())
+-- 🟢 Section خاص بمعلومات السيرفر
+local PlayerCountSection = Tab:CreateSection("Server Info")
+
+-- 🟢 إنشاء Label لعدد اللاعبين الحاليين
+local PlayerCountLabel = Tab:CreateLabel("عدد اللاعبين: " .. #Players:GetPlayers())
+
+-- 🟢 تحديث العداد عند دخول أي لاعب
 Players.PlayerAdded:Connect(function()
-    PlayerCountLabel.Text = "Players: "..#Players:GetPlayers()
+    PlayerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
 end)
+
+-- 🟢 تحديث العداد عند خروج أي لاعب
 Players.PlayerRemoving:Connect(function()
-    PlayerCountLabel.Text = "Players: "..#Players:GetPlayers()
+    PlayerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
 end)
