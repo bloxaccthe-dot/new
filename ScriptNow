@@ -94,7 +94,7 @@ local ResetButton = Tab:CreateButton({
       })
    end,
 })
-local Tab = Window:CreateTab("Main", 4483362458) -- Title, Image
+local Tab = Window:CreateTab("Info", 6034818373) -- Title, Image
 -- 🟢 Section خاص بمعلومات السيرفر
 local PlayerCountSection = Tab:CreateSection("Server Info")
 
