@@ -96,9 +96,8 @@ local ResetButton = Tab:CreateButton({
 })
 task.wait(1) -- تأخير بسيط لضمان تحميل الواجهة
 
+-- 📄 تبويب المعلومات (Info)
 local InfoTab = Window:CreateTab("Info", 4483362458)
-print("✅ تبويب Info تم تحميله بنجاح") -- تأكيد أنه فعّال
-
 local Section = InfoTab:CreateSection("Server Info")
 
 local Players = game:GetService("Players")
@@ -111,10 +110,37 @@ Players.PlayerRemoving:Connect(function()
 	playerCountLabel:Set("👥 عدد اللاعبين: " .. #Players:GetPlayers())
 end)
 
+-- 🕒 مدة تشغيل السكربت
+local startTime = tick()
+local scriptTimeLabel = InfoTab:CreateLabel("🕒 تم تفعيل السكربت منذ: 0 ثانية")
+
+task.spawn(function()
+	while task.wait(1) do
+		local elapsed = tick() - startTime
+		local minutes = math.floor(elapsed / 60)
+		local seconds = math.floor(elapsed % 60)
+		local timeText
+		if minutes > 0 then
+			timeText = string.format("%d دقيقة و %d ثانية", minutes, seconds)
+		else
+			timeText = string.format("%d ثانية", seconds)
+		end
+		scriptTimeLabel:Set("🕒 تم تفعيل السكربت منذ: " .. timeText)
+	end
+end)
+
+-- 🌐 معلومات السيرفر
+local PlaceId = game.PlaceId
+local JobId = game.JobId
+InfoTab:CreateLabel("🌐 Place ID: " .. PlaceId)
+InfoTab:CreateLabel("🆔 Server ID: " .. JobId)
+
+-- 🧠 نوع الجهاز
 local UserInputService = game:GetService("UserInputService")
 local deviceType = UserInputService.TouchEnabled and "📱 جوال" or "💻 كمبيوتر"
 InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
 
+-- 🔄 زر إعادة تحميل السكربت
 InfoTab:CreateButton({
 	Name = "🔄 إعادة تحميل السكربت",
 	Callback = function()
