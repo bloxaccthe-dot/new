@@ -95,6 +95,24 @@ local ResetButton = Tab:CreateButton({
    end,
 })
 local Tab = Window:CreateTab("Info", 6034818373) -- Title, Image
+-- 🧠 نوع الجهاز
+local UserInputService = game:GetService("UserInputService")
+local deviceType = UserInputService.TouchEnabled and "📱 جوال" or "💻 كمبيوتر"
+InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
+
+-- 🔄 زر إعادة تحميل السكربت
+InfoTab:CreateButton({
+    Name = "🔄 إعادة تحميل السكربت",
+    Callback = function()
+        Rayfield:Notify({
+            Title = "جارٍ إعادة التحميل...",
+            Content = "انتظر لحظة ⏳",
+            Duration = 2
+        })
+        task.wait(2)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/bloxaccthe-dot/new/refs/heads/main/ScriptNow"))()
+    end
+})
 -- 🟢 Section خاص بمعلومات السيرفر
 local PlayerCountSection = Tab:CreateSection("Server Info")
 
