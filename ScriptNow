@@ -150,7 +150,16 @@ local CopyButton = Tab:CreateButton({
         end
     end
 })
-local Label = Tab:CreateLabel("Label Example", 4483362458, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
-local Device = game:GetService("UserInputService")
-local deviceType = Device.TouchEnabled and "جوال 📱" or "كمبيوتر 💻"
+-- 🧠 نوع الجهاز
+local UserInputService = game:GetService("UserInputService")
+local deviceType = UserInputService.TouchEnabled and "📱 جوال" or "💻 كمبيوتر"
 InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
+
+-- 🔄 زر إعادة تحميل السكربت
+InfoTab:CreateButton({
+    Name = "🔄 إعادة تحميل السكربت",
+    Callback = function()
+        -- 🧩 ضع هنا رابط سكربتك الأصلي 👇
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/YourRepo/YourScript/main/Script.lua"))()
+    end
+})
