@@ -150,3 +150,7 @@ local CopyButton = Tab:CreateButton({
         end
     end
 })
+local Label = Tab:CreateLabel("Label Example", 4483362458, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Device = game:GetService("UserInputService")
+local deviceType = Device.TouchEnabled and "جوال 📱" or "كمبيوتر 💻"
+InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
