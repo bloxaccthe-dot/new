@@ -140,25 +140,9 @@ local UserInputService = game:GetService("UserInputService")
 local deviceType = UserInputService.TouchEnabled and "📱 جوال" or "💻 كمبيوتر"
 InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
 
--- 🔄 زر إعادة تحميل السكربت
-InfoTab:CreateButton({
-	Name = "ريسيت السكربت 🤖",
-	Callback = function()
-		Rayfield:Notify({
-			Title = "جارٍ إعادة التحميل...",
-			Content = "انتظر لحظة ⏳",
-			Duration = 2
-		})
-		task.wait(2)
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/bloxaccthe-dot/new/refs/heads/main/ScriptNow"))()
-	end
-})
--- إنشاء Section
-local CopySection = Tab:CreateSection("اضغط لنسخ حساب المطور")
-
 -- زر النسخ
 local CopyButton = Tab:CreateButton({
-    Name = "نسخ يوزر المطور 🪽",
+    Name = "نسخ يوزر المطور",
     Callback = function()
         local username = "kaljjaj"  -- هنا اسم المطور الثابت
 
@@ -192,4 +176,17 @@ local CopyButton = Tab:CreateButton({
             })
         end
     end
+})
+-- 🔄 زر إعادة تحميل السكربت
+InfoTab:CreateButton({
+	Name = "ريسيت السكربت 🤖",
+	Callback = function()
+		Rayfield:Notify({
+			Title = "جارٍ إعادة التحميل...",
+			Content = "انتظر لحظة ⏳",
+			Duration = 2
+		})
+		task.wait(2)
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/bloxaccthe-dot/new/refs/heads/main/ScriptNow"))()
+	end
 })
