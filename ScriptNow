@@ -94,80 +94,21 @@ local ResetButton = Tab:CreateButton({
       })
    end,
 })
-local Tab = Window:CreateTab("Info", 6034818373) -- Title, Image
--- 🧠 نوع الجهاز
-local UserInputService = game:GetService("UserInputService")
-local deviceType = UserInputService.TouchEnabled and "📱 جوال" or "💻 كمبيوتر"
-InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
+-- 📄 تبويب المعلومات (Info)
+local InfoTab = Window:CreateTab("Info", 4483362458)
+local Section = InfoTab:CreateSection("Server Info")
 
--- 🔄 زر إعادة تحميل السكربت
-InfoTab:CreateButton({
-    Name = "🔄 إعادة تحميل السكربت",
-    Callback = function()
-        Rayfield:Notify({
-            Title = "جارٍ إعادة التحميل...",
-            Content = "انتظر لحظة ⏳",
-            Duration = 2
-        })
-        task.wait(2)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/bloxaccthe-dot/new/refs/heads/main/ScriptNow"))()
-    end
-})
--- 🟢 Section خاص بمعلومات السيرفر
-local PlayerCountSection = Tab:CreateSection("Server Info")
+-- 👥 عدد اللاعبين
+local Players = game:GetService("Players")
+local playerCountLabel = InfoTab:CreateLabel("عدد اللاعبين: " .. #Players:GetPlayers())
 
--- 🟢 إنشاء Label لعدد اللاعبين الحاليين
-local PlayerCountLabel = Tab:CreateLabel("عدد اللاعبين: " .. #Players:GetPlayers())
-
--- 🟢 تحديث العداد عند دخول أي لاعب
 Players.PlayerAdded:Connect(function()
-    PlayerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
+	playerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
 end)
-
--- 🟢 تحديث العداد عند خروج أي لاعب
 Players.PlayerRemoving:Connect(function()
-    PlayerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
+	playerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
 end)
--- إنشاء Section
-local CopySection = Tab:CreateSection("اضغط لنسخ حساب المطور")
 
--- زر النسخ
-local CopyButton = Tab:CreateButton({
-    Name = "نسخ يوزر المطور",
-    Callback = function()
-        local username = "kaljjaj"  -- هنا اسم المطور الثابت
-
-        -- نجرب دالة النسخ الشائعة
-        local success, err = pcall(function()
-            if setclipboard then
-                setclipboard(username)
-            elseif syn and syn.set_clipboard then
-                syn.set_clipboard(username)
-            elseif toclipboard then
-                toclipboard(username)
-            else
-                error("النسخ غير مدعوم على هذا الـ executor")
-            end
-        end)
-
-        -- إشعار بعد النسخ أو الفشل
-        if success then
-            Tab:CreateNotification({
-                Name = "تم النسخ",
-                Content = "تم نسخ يوزر المطور إلى الحافظة ✅",
-                Image = "rbxassetid://7733658504",
-                Time = 4
-            })
-        else
-            Tab:CreateNotification({
-                Name = "فشل النسخ",
-                Content = "النسخ التلقائي غير مدعوم على هذا executor. انسخ الاسم يدوياً: " .. username,
-                Image = "rbxassetid://7733658504",
-                Time = 6
-            })
-        end
-    end
-})
 -- 🧠 نوع الجهاز
 local UserInputService = game:GetService("UserInputService")
 local deviceType = UserInputService.TouchEnabled and "📱 جوال" or "💻 كمبيوتر"
@@ -175,9 +116,14 @@ InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
 
 -- 🔄 زر إعادة تحميل السكربت
 InfoTab:CreateButton({
-    Name = "🔄 إعادة تحميل السكربت",
-    Callback = function()
-        -- 🧩 ضع هنا رابط سكربتك الأصلي 👇
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/YourRepo/YourScript/main/Script.lua"))()
-    end
+	Name = "🔄 إعادة تحميل السكربت",
+	Callback = function()
+		Rayfield:Notify({
+			Title = "جارٍ إعادة التحميل...",
+			Content = "انتظر لحظة ⏳",
+			Duration = 2
+		})
+		task.wait(2)
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/bloxaccthe-dot/new/refs/heads/main/ScriptNow"))()
+	end
 })
