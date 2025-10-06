@@ -94,27 +94,27 @@ local ResetButton = Tab:CreateButton({
       })
    end,
 })
--- 📄 تبويب المعلومات (Info)
+task.wait(1) -- تأخير بسيط لضمان تحميل الواجهة
+
 local InfoTab = Window:CreateTab("Info", 4483362458)
+print("✅ تبويب Info تم تحميله بنجاح") -- تأكيد أنه فعّال
+
 local Section = InfoTab:CreateSection("Server Info")
 
--- 👥 عدد اللاعبين
 local Players = game:GetService("Players")
-local playerCountLabel = InfoTab:CreateLabel("عدد اللاعبين: " .. #Players:GetPlayers())
+local playerCountLabel = InfoTab:CreateLabel("👥 عدد اللاعبين: " .. #Players:GetPlayers())
 
 Players.PlayerAdded:Connect(function()
-	playerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
+	playerCountLabel:Set("👥 عدد اللاعبين: " .. #Players:GetPlayers())
 end)
 Players.PlayerRemoving:Connect(function()
-	playerCountLabel:Set("عدد اللاعبين: " .. #Players:GetPlayers())
+	playerCountLabel:Set("👥 عدد اللاعبين: " .. #Players:GetPlayers())
 end)
 
--- 🧠 نوع الجهاز
 local UserInputService = game:GetService("UserInputService")
 local deviceType = UserInputService.TouchEnabled and "📱 جوال" or "💻 كمبيوتر"
 InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
 
--- 🔄 زر إعادة تحميل السكربت
 InfoTab:CreateButton({
 	Name = "🔄 إعادة تحميل السكربت",
 	Callback = function()
