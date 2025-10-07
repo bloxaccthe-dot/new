@@ -167,3 +167,28 @@ InfoTab:CreateButton({
 		})
 	end
 })
+-- 🔔 إشعار عند دخول صديق للسيرفر
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- نجيب قائمة الأصدقاء الخاصة باللاعب
+local friendUserIds = {}
+pcall(function()
+	for _, friend in ipairs(LocalPlayer:GetFriendsAsync():GetCurrentPage()) do
+		table.insert(friendUserIds, friend.Id)
+	end
+end)
+
+-- لما يدخل لاعب جديد
+Players.PlayerAdded:Connect(function(player)
+	for _, friendId in ipairs(friendUserIds) do
+		if player.UserId == friendId then
+			Rayfield:Notify({
+				Title = "👥 صديقك دخل اللعبة!",
+				Content = "صديقك " .. player.Name .. " انضم إلى السيرفر 🎉",
+				Duration = 4
+			})
+			break
+		end
+	end
+end)
