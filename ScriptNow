@@ -167,28 +167,38 @@ InfoTab:CreateButton({
 		})
 	end
 })
--- 🔔 إشعار عند دخول صديق للسيرفر
+-- 👥 إشعار عند دخول صديق مع صوت تنبيه
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- نجيب قائمة الأصدقاء الخاصة باللاعب
-local friendUserIds = {}
-pcall(function()
-	for _, friend in ipairs(LocalPlayer:GetFriendsAsync():GetCurrentPage()) do
-		table.insert(friendUserIds, friend.Id)
-	end
-end)
+-- 🕒 انتظر شوي ليتحمل Rayfield
+task.wait(2)
 
--- لما يدخل لاعب جديد
+-- نراقب أي لاعب جديد يدخل السيرفر
 Players.PlayerAdded:Connect(function(player)
-	for _, friendId in ipairs(friendUserIds) do
-		if player.UserId == friendId then
-			Rayfield:Notify({
-				Title = "👥 صديقك دخل اللعبة!",
-				Content = "صديقك " .. player.Name .. " انضم إلى السيرفر 🎉",
-				Duration = 4
-			})
-			break
-		end
+	task.wait(1) -- ننتظر ثانية لتفادي التأخير أو تحميل الاسم
+
+	-- نتحقق إذا هو صديقك فعلاً
+	local success, isFriend = pcall(function()
+		return LocalPlayer:IsFriendsWith(player.UserId)
+	end)
+
+	if success and isFriend then
+		-- 🔔 إشعار Rayfield
+		Rayfield:Notify({
+			Title = "👥 صديقك دخل اللعبة!",
+			Content = "🎉 صديقك " .. player.Name .. " انضم إلى السيرفر!",
+			Duration = 5
+		})
+
+		-- 🎵 صوت تنبيه بسيط
+		local sound = Instance.new("Sound")
+		sound.SoundId = "rbxassetid://9118823105" -- صوت ناعم قصير (تقدر تغيّره)
+		sound.Volume = 2
+		sound.Parent = workspace
+		sound:Play()
+
+		-- نحذف الصوت بعد تشغيله
+		game.Debris:AddItem(sound, 5)
 	end
 end)
