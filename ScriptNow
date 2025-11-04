@@ -202,3 +202,70 @@ Players.PlayerAdded:Connect(function(player)
 		game.Debris:AddItem(sound, 5)
 	end
 end)
+local Section = Tab:CreateSection("ESP.🎨")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- 🟦 جدول لحفظ الهايلايتات عشان نقدر نحذفها لاحقًا
+local ActiveESP = {}
+
+local function EnableESP()
+	for _, player in pairs(Players:GetPlayers()) do
+		if player ~= LocalPlayer then
+			local character = player.Character
+			if character and not ActiveESP[player] then
+				local highlight = Instance.new("Highlight")
+				highlight.FillTransparency = 0.65 -- نعومة
+				highlight.OutlineTransparency = 0 -- الحواف واضحة
+				highlight.FillColor = Color3.fromRGB(0, 170, 255) -- أزرق ناعم (Smooth)
+				highlight.Parent = character
+				ActiveESP[player] = highlight
+			end
+		end
+	end
+end
+
+local function DisableESP()
+	for player, highlight in pairs(ActiveESP) do
+		if highlight then highlight:Destroy() end
+	end
+	ActiveESP = {}
+end
+
+-- ✅ متابعة اللاعبين لو دخلوا/طلعوا
+Players.PlayerAdded:Connect(function(player)
+	if ActiveESP[player] == nil and ESPToggleFlag then
+		task.wait(1)
+		EnableESP()
+	end
+end)
+Players.PlayerRemoving:Connect(function(player)
+	if ActiveESP[player] then
+		ActiveESP[player]:Destroy()
+		ActiveESP[player] = nil
+	end
+end)
+
+-- 🎚️ السويتشر داخل Rayfield:
+local ESPToggle = InfoTab:CreateToggle({
+	Name = "🔍 تشغيل / إيقاف ESP",
+	CurrentValue = false,
+	Flag = "ESPToggleFlag",
+	Callback = function(Value)
+		if Value then
+			EnableESP()
+			Rayfield:Notify({
+				Title = "ESP ✅",
+				Content = "تم تفعيل رؤية اللاعبين من خلف الجدران",
+				Duration = 3
+			})
+		else
+			DisableESP()
+			Rayfield:Notify({
+				Title = "ESP ⛔",
+				Content = "تم إيقاف الرؤية، رجع الوضع طبيعي",
+				Duration = 3
+			})
+		end
+	end,
+})
