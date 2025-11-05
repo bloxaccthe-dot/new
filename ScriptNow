@@ -222,7 +222,7 @@ local function EnableESP()
 				-- 🏷️ مسافة فوق الرأس
 				local billboard = Instance.new("BillboardGui")
 				billboard.Name = "ESP_Distance"
-				billboard.Size = UDim2.new(0, 50, 0, 20)
+				billboard.Size = UDim2.new(0, 40, 0, 15) -- أصغر حجم
 				billboard.StudsOffset = Vector3.new(0, 3, 0) -- فوق الرأس
 				billboard.Adornee = player.Character:FindFirstChild("Head")
 				billboard.AlwaysOnTop = true
@@ -232,7 +232,8 @@ local function EnableESP()
 				text.Size = UDim2.new(1, 0, 1, 0)
 				text.BackgroundTransparency = 1
 				text.TextColor3 = Color3.fromRGB(0, 255, 0)
-				text.TextScaled = true -- يجعلها صغيرة ومناسبة
+				text.TextScaled = false -- لا نستخدم التكبير التلقائي
+				text.TextSize = 14 -- حجم صغير وواضح
 				text.Font = Enum.Font.GothamSemibold
 				text.Parent = billboard
 
