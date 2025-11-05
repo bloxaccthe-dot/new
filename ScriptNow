@@ -50,7 +50,7 @@ local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
--- 🏃‍♂️ سلايدر السرعة
+-- سلايدر سرعة
 local SpeedSlider = Tab:CreateSlider({
    Name = "WalkSpeed",
    Range = {16, 200},
@@ -63,7 +63,7 @@ local SpeedSlider = Tab:CreateSlider({
    end,
 })
 
--- 🦘 سلايدر القفز
+--  سلايدر قفز
 local JumpSlider = Tab:CreateSlider({
    Name = "JumpPower",
    Range = {50, 300},
@@ -76,7 +76,7 @@ local JumpSlider = Tab:CreateSlider({
    end,
 })
 
--- 🔄 زر إعادة الضبط
+-- زر ريسيت 
 local ResetButton = Tab:CreateButton({
    Name = "🔄 Reset to Default",
    Callback = function()
@@ -94,9 +94,9 @@ local ResetButton = Tab:CreateButton({
       })
    end,
 })
-task.wait(1) -- تأخير بسيط لضمان تحميل الواجهة
+task.wait(1) -- تأخير  الواجهة
 
--- 📄 تبويب المعلومات (Info)
+--   المعلومات (Info)
 local InfoTab = Window:CreateTab("Info", 4483362458)
 local Section = InfoTab:CreateSection("Server Info")
 
@@ -110,7 +110,7 @@ Players.PlayerRemoving:Connect(function()
 	playerCountLabel:Set("👥 عدد اللاعبين: " .. #Players:GetPlayers())
 end)
 
--- 🕒 مدة تشغيل السكربت
+--  مدة تشغيل السكربت
 local startTime = tick()
 local scriptTimeLabel = InfoTab:CreateLabel("🕒 تم تفعيل السكربت منذ: 0 ثانية")
 
@@ -135,12 +135,12 @@ local JobId = game.JobId
 InfoTab:CreateLabel("🌐 Place ID: " .. PlaceId)
 InfoTab:CreateLabel("🆔 Server ID: " .. JobId)
 
--- 🧠 نوع الجهاز
+--  نوع الجهاز
 local UserInputService = game:GetService("UserInputService")
-local deviceType = UserInputService.TouchEnabled and "📱 جوال" or "💻 كمبيوتر"
-InfoTab:CreateLabel("🧠 نوع الجهاز: " .. deviceType)
+local deviceType = UserInputService.TouchEnabled and "مبايل " or "PC"
+InfoTab:CreateLabel("device : " .. deviceType)
 
--- 🔄 زر إعادة تحميل السكربت
+-- زر ريسيت السكربت
 InfoTab:CreateButton({
 	Name = "ريسيت السكربت 🤖",
 	Callback = function()
@@ -154,7 +154,7 @@ InfoTab:CreateButton({
 	end
 })
 InfoTab:CreateButton({
-	Name = "اضغط لنسخ اسم المطور 🪽",
+	Name = "اضغط لنسخ اسم المطور ",
 	Callback = function()
 		local nameToCopy = "kaljjaj"
 		pcall(function()
@@ -167,18 +167,18 @@ InfoTab:CreateButton({
 		})
 	end
 })
--- 👥 إشعار عند دخول صديق مع صوت تنبيه
+--  إشعار لمن يدخل صديق
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- 🕒 انتظر شوي ليتحمل Rayfield
+--  انتظار 
 task.wait(2)
 
 -- نراقب أي لاعب جديد يدخل السيرفر
 Players.PlayerAdded:Connect(function(player)
 	task.wait(1) -- ننتظر ثانية لتفادي التأخير أو تحميل الاسم
 
-	-- نتحقق إذا هو صديقك فعلاً
+	-- نتحقق إذا هاذ صديق
 	local success, isFriend = pcall(function()
 		return LocalPlayer:IsFriendsWith(player.UserId)
 	end)
@@ -191,81 +191,88 @@ Players.PlayerAdded:Connect(function(player)
 			Duration = 5
 		})
 
-		-- 🎵 صوت تنبيه بسيط
+		--  صوت تنبيه
 		local sound = Instance.new("Sound")
 		sound.SoundId = "rbxassetid://9118823105" -- صوت ناعم قصير (تقدر تغيّره)
 		sound.Volume = 2
 		sound.Parent = workspace
 		sound:Play()
 
-		-- نحذف الصوت بعد تشغيله
+		-- نحذف الصوت وره مايشتغل
 		game.Debris:AddItem(sound, 5)
 	end
 end)
 local Section = Tab:CreateSection("ESP.🎨")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
--- 🟦 جدول لحفظ الهايلايتات عشان نقدر نحذفها لاحقًا
-local ActiveESP = {}
+local ESP_Enabled = false
 
 local function EnableESP()
-	for _, player in pairs(Players:GetPlayers()) do
-		if player ~= LocalPlayer then
-			local character = player.Character
-			if character and not ActiveESP[player] then
+	ESP_Enabled = true
+
+	for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+		if player ~= game:GetService("Players").LocalPlayer then
+			if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+
+				-- ✨ Highlight
 				local highlight = Instance.new("Highlight")
-				highlight.FillTransparency = 0.65 -- نعومة
-				highlight.OutlineTransparency = 0 -- الحواف واضحة
-				highlight.FillColor = Color3.fromRGB(0, 170, 255) -- أزرق ناعم (Smooth)
-				highlight.Parent = character
-				ActiveESP[player] = highlight
+				highlight.Name = "ESP_Highlight"
+				highlight.FillTransparency = 1
+				highlight.OutlineColor = Color3.fromRGB(0, 255, 0)
+				highlight.Parent = player.Character
+
+				-- 🏷️ مسافة فوق الرأس
+				local billboard = Instance.new("BillboardGui")
+				billboard.Name = "ESP_Distance"
+				billboard.Size = UDim2.new(0, 50, 0, 20)
+				billboard.StudsOffset = Vector3.new(0, 3, 0) -- فوق الرأس
+				billboard.Adornee = player.Character:FindFirstChild("Head")
+				billboard.AlwaysOnTop = true
+				billboard.Parent = player.Character
+
+				local text = Instance.new("TextLabel")
+				text.Size = UDim2.new(1, 0, 1, 0)
+				text.BackgroundTransparency = 1
+				text.TextColor3 = Color3.fromRGB(0, 255, 0)
+				text.TextScaled = true -- يجعلها صغيرة ومناسبة
+				text.Font = Enum.Font.GothamSemibold
+				text.Parent = billboard
+
+				-- 🔄 تحديث المسافة
+				task.spawn(function()
+					while ESP_Enabled and player.Character and player.Character:FindFirstChild("HumanoidRootPart") do
+						local dist = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position -
+							player.Character.HumanoidRootPart.Position).Magnitude
+						text.Text = string.format("%.0f m", dist)
+						task.wait(0.1)
+					end
+				end)
 			end
 		end
 	end
 end
 
 local function DisableESP()
-	for player, highlight in pairs(ActiveESP) do
-		if highlight then highlight:Destroy() end
+	ESP_Enabled = false
+
+	for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+		if player.Character then
+			if player.Character:FindFirstChild("ESP_Highlight") then
+				player.Character:FindFirstChild("ESP_Highlight"):Destroy()
+			end
+			if player.Character:FindFirstChild("ESP_Distance") then
+				player.Character:FindFirstChild("ESP_Distance"):Destroy()
+			end
+		end
 	end
-	ActiveESP = {}
 end
 
--- ✅ متابعة اللاعبين لو دخلوا/طلعوا
-Players.PlayerAdded:Connect(function(player)
-	if ActiveESP[player] == nil and ESPToggleFlag then
-		task.wait(1)
-		EnableESP()
-	end
-end)
-Players.PlayerRemoving:Connect(function(player)
-	if ActiveESP[player] then
-		ActiveESP[player]:Destroy()
-		ActiveESP[player] = nil
-	end
-end)
-
--- 🎚️ السويتشر داخل Rayfield:
-local ESPToggle = InfoTab:CreateToggle({
-	Name = "🔍 تشغيل / إيقاف ESP",
+InfoTab:CreateToggle({
+	Name = "🎯 ESP اللاعبين",
 	CurrentValue = false,
-	Flag = "ESPToggleFlag",
-	Callback = function(Value)
-		if Value then
+	Callback = function(v)
+		if v then
 			EnableESP()
-			Rayfield:Notify({
-				Title = "ESP ✅",
-				Content = "تم تفعيل رؤية اللاعبين من خلف الجدران",
-				Duration = 3
-			})
 		else
 			DisableESP()
-			Rayfield:Notify({
-				Title = "ESP ⛔",
-				Content = "تم إيقاف الرؤية، رجع الوضع طبيعي",
-				Duration = 3
-			})
 		end
-	end,
+	end
 })
